@@ -1,0 +1,64 @@
+@import "./Admin/mixin";
+@import "home";
+@import "cart";
+@import "shipping";
+@import "login";
+@import "search";
+
+.header{
+   @include flex(row,flex-end,stretch,1.2rem);
+//    box-shadow: rgba(50, 50, 93, 0.25) 0px .5px 5px 0px;
+   padding: 1rem;
+   a{
+    color: rgb(46,46,46);
+    letter-spacing: 2px;
+    font-size: 1.2rem;
+
+    &:hover{
+           color: rgb(57, 57, 57);
+    }
+   }
+
+   button{
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: transparent;
+    &:hover{
+        color: rgb(57, 57, 57);
+    }
+   }
+
+   dialog{
+    z-index: 10;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    left: calc(100% - 100px);
+    top:8%;
+    >div{
+        @include flex(column,flex-start,center,0.25rem)
+    }
+   }
+   
+} 
+
+.heading{
+    @include heading;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.container{
+    max-width: 1367px;
+    width: 100%;
+    margin: auto;
+    overflow: auto;
+
+    >h1{
+        @include heading;
+        margin: 1rem 0;
+        text-align: left;
+    }
+}

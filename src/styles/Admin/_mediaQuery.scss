@@ -1,0 +1,182 @@
+@media screen and (width<=1200px) {
+     .adminContainer{
+        overflow: auto;
+     }
+     .dashboard{
+    
+        .widgetContainer,.transactionContainer,.graphContainer{
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .graphContainer{
+            padding: 2rem;
+        }
+        .transactionContainer{
+            padding: 2rem;
+            height: unset;
+        }
+
+
+     }
+
+     .productManagement{
+        padding: 2rem;
+
+     }
+     .barContainer{
+       @include flex(row,flex-end,unset,0.2rem)
+     }
+     .bar{
+        width:85%;
+     }
+   
+}
+
+@media screen and (width<=1100px) {
+    .adminContainer{
+       grid-template-columns: 1fr
+       !important;
+    }
+
+}
+@media screen and (width<=600px) {
+    .productManagement{
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+       
+        >section{
+            max-width: 400px;
+            box-shadow: 0 0 0 0;
+        }
+        >article{
+            box-shadow: 0 0 0 0;
+        }
+    }
+    @media screen and (width<=600px) {
+        .mobile>section{
+                margin-top: 25rem;
+            
+        }
+    }
+    .chartContainer{
+        padding: 0;
+        >h1{
+            margin: 0;
+            text-align: center;
+        }
+        >section{
+            margin: 8rem auto;
+        }
+    }
+    .coupnHeading{
+        text-align: center;
+    }
+    .dashBordAppContainer{
+        .couponForm{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+
+}
+
+@media screen and (width<=900px) {
+    .revenueChart{
+        padding: 0 .2rem !important;
+    }
+    .chartHeading{
+        width: 100%;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (width<=1050px) {
+    
+    .cart{
+        padding: 0;
+         @include flex(column,space-between,center,1rem);
+        // background-color: aquamarine;
+        >main {
+            width: 99%;
+        }
+        >aside{
+            // background-color: aqua;
+            height: 20rem;
+            width: 100% !important;
+           >div{
+            flex-direction: row !important;
+            height: 30rem;
+            gap: 1rem;
+            font-size: .8rem;
+           }
+            
+        }
+    }
+   
+    .cartItem{
+        gap: .5rem;
+        padding: 0 .5rem;
+        font-size: .8rem;
+    }
+}
+
+@media screen and (width<=1300px){
+    #home{
+      
+            gap: 0;
+        
+        >.productCard{
+            height: 98%;
+            padding: 1rem 0rem;
+            >img{
+                height: 10rem;
+            }
+        }
+    }
+}
+
+
+@media screen and (width<=500px){
+    .productCard{
+        height:16rem;
+        > img{
+            height: 10rem;
+     }
+    } 
+
+    .productSearchPage{
+        article{
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+    }
+    .chart-container {
+        padding: 1rem;
+        .pie{
+            margin: 0;
+        }
+        .pieHeading{
+            margin: 0rem 0rem 0rem 5rem ;
+            font-size: 1.1rem;
+        }
+       
+        >h1{
+            margin: 0 0 .2rem 7rem;
+        }
+
+        > section {
+            margin: 1rem;
+            >div{
+                margin: 1rem;
+            }
+            >h2{
+                font-size: 1rem;
+                margin:0rem 0rem 0rem 2rem;
+                font-weight: 700;
+            }
+        }
+        
+    }
+}
