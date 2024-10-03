@@ -1,5 +1,5 @@
 import { Skeleton } from '../components/Loader'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import {  Navigate, useParams } from 'react-router-dom'
 import { useOrderDetalisQuery } from '../redux/api/orderAPI'
 import { server } from '../redux/store'
 import { Order } from '../types/types'
@@ -70,7 +70,7 @@ const OrderDetalis = () => {
     </div>
   )
 }
-const ProductCard=({name,photo,price,quantity,_id}:OrderItemType)=>(
+const ProductCard=({name,photo,price,quantity}:OrderItemType)=>(
     <div className="transactionProductCard">
       <img src={photo} alt={name} /> 
       {/* <Link to={`/product/${_id}`}>{name}</Link> */}
