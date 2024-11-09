@@ -7,11 +7,17 @@ export interface UserReducerInitialState{
 }
 export interface CartReducerInitialState{
     loading:boolean;
-    cartItems:CartItem[];
+    cartItems:CartItem[],
     subtotal:number,
     shippingCharges:number,
     total:number,
-    tax:number,
     discount:number,
     shippingInfo:ShippingInfo;
+}
+export interface wishListReducerInitialState{
+    loading:boolean;
+    wishList:CartItem[]
+}
+export type darkReducerInitialState={
+    dark:boolean
 }

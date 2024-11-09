@@ -1,7 +1,8 @@
 import { FaTrash } from "react-icons/fa"
 import { Link } from "react-router-dom"
-import { server } from "../redux/store"
 import { CartItem } from "../types/types"
+import { useSelector } from "react-redux";
+import { darkReducerInitialState } from "../types/reducers-types";
 
 type CartItemsProps={
             cartItem:CartItem,
@@ -11,12 +12,14 @@ type CartItemsProps={
 }
 
 const CartItems = ({cartItem,incrementHandler,decrementHandler,removeHandler}:CartItemsProps) => {
- const {photo,productId,name,price,quantity}=cartItem
+  const {dark}=useSelector((state:{darkReducer:darkReducerInitialState})=>state.darkReducer)
+ 
+ const {photos,productId,name,price,quantity}=cartItem
   return (
     <div className="cartItem">
-       <img src={`${server}/${photo}`} alt={name} />
+       <img src={photos} alt={name} />
        <article>
-        <Link to={`/product/${productId}`}>{name}</Link>
+        <Link className={`${dark ? 'darkList' : ''}`} to={`/product/${productId}`}>{name}</Link>
         <span>&#x20B9;{price}</span>
        </article>
        <div>
@@ -24,7 +27,7 @@ const CartItems = ({cartItem,incrementHandler,decrementHandler,removeHandler}:Ca
         <p>{quantity}</p>
         <button onClick={()=>incrementHandler(cartItem)}>+</button>
        </div>
-       <button onClick={()=>removeHandler(productId)}><FaTrash/></button>
+       <button onClick={()=>removeHandler(productId)} ><FaTrash/></button>
     </div> 
   )
 }

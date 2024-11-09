@@ -1,15 +1,17 @@
 .cart{
     padding: 0rem 4rem;
     @include flex(row,unset,unset,4rem);
-    height: calc(100vh - 4rem);
+     height: 100vh;
 
     >main{
         width: 70%;
+        overflow-y: auto;
+        scroll-behavior: smooth;
         >h1{
             @include heading(2px);
             text-align: center;
         }
-        overflow-y: auto;
+        
         &::-webkit-scrollbar{
             display: none;
         }
@@ -18,7 +20,10 @@
 
     >aside{
         width: 30%;
+        height: 70%;
         padding: 4rem;
+        margin-top: 2rem !important;
+        border-radius: 10px;
         @include flex(column,center,stretch,1.5rem);
         >div{
             @include flex(column,center,stretch,1.5rem);
@@ -107,9 +112,67 @@
         @include flex;
         cursor: pointer;
         font-size: 1.2rem;
+        background-color:white;
+    width: 2rem;
+    height:2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
         &:hover{
             color: red;
         }
     }
 }
 
+.wishContainer{
+    // background-color: aqua;
+    min-height: 100vh;
+    >main{
+        padding-top: 3rem;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0rem 5rem;
+        gap:1rem;
+        >h1{
+            text-transform:uppercase;
+            font-weight: 300;
+            text-align: center;
+        }
+    }
+}
+
+.wishItem{
+    width: 15.75rem;
+    height: 17.65rem;
+    padding: 1rem;
+    position: relative;
+    flex: none;
+    border-radius:10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(154,154,154,0.38);
+    >span{
+        font-size: 1.2rem;
+        font-weight: 700
+    }
+    img{
+        @include sqaure(calc(12rem - 3rem));
+        object-fit: contain;
+        margin: 0.4rem;
+     }
+    
+     >button{
+        margin-top: 1rem;
+        width: 80%;
+        border-radius: 5px;
+        padding: .3rem;
+        cursor: pointer;
+     }
+     .wishToCart{
+        position: absolute;
+        top:0.2rem;
+        right: 0.5rem;
+        cursor: pointer;
+     }
+}

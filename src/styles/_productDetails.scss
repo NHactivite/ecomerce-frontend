@@ -1,0 +1,227 @@
+.productDetails {
+  margin: auto;
+  max-width: 1920px;
+  width: 100%;
+  // height: calc(100vh - 8rem);
+  padding: 2rem 4rem;
+  > main {
+    display: flex;
+    > section {
+      &:first-of-type {
+       padding: 3rem;
+        width: 40%;
+        height: 60vh;
+      }
+      &:last-of-type {
+      //   border: 1px solid navy;
+        width: 50%;
+        min-height: 80vh;
+        padding:0 5rem ;
+       >div>p{
+        width: 60%;
+        display: flex;
+        justify-content: space-between;
+       }
+      }
+      h1 {
+        font-size: 2.5rem;
+         margin-bottom: 1rem ;
+      }
+      code {
+        font-size: 1.2rem;
+        background-color: rgb(252, 232, 4);
+        // color: white;
+        padding: 0.2rem 1rem;
+        border-radius: 10px;
+        color: rgb(0, 0, 0);
+      }
+
+      article {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        > div {
+          width: 10rem;
+          @include flex(row,space-between);
+          .Qantitybutton {
+            border: none;
+            @include sqaure(2.5rem);
+            border-radius: 5px;
+            @include flex;
+            cursor: pointer;
+            font-size: 1.2rem;
+            &:hover {
+              background-color: rgb(45, 45, 45);
+              color: white;
+            }
+          }
+        }
+        .AddtoCartBtnDark{
+          @include btn(.5rem, rgba(154,154,154,0.38), white);
+          padding: .8rem 0;
+          border-radius: 5px;
+          font-size: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          width: 10rem;
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+        .AddtoCartBtn{
+          @include btn(.5rem, rgba(0, 0, 0), white);
+          padding: .8rem 0;
+          border-radius: 5px;
+          font-size: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          width: 10rem;
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+      }
+      h3 {
+        font-size: 1.5rem;
+        color: rgb(255, 235, 10);
+        margin: 1rem 0;
+        // background-color: rgb(252, 232, 4);
+        width: 5rem;
+        padding-left: .3rem;
+        border-radius: 10px;
+      }
+      p {
+        font-size: 1.2rem;
+        margin: 1rem 0;
+        font-weight: lighter;
+        letter-spacing: 150%;
+      }
+    }
+  }
+  .reviewDialog{
+    >div{
+      display: flex;
+      justify-content: space-between;
+      >span{
+        background-color: black;
+        width: 2rem;
+        height: 2rem;
+        display: grid;
+        place-items: center;
+        color: white;
+        cursor: pointer;
+      }
+      >h2{
+        margin: 0.2rem 0rem 1rem 10rem;
+      }
+    }
+    gap: 1rem;
+    width:35rem;
+    min-height: 40vh;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    border: none;
+    border-radius: .5rem;
+    textarea{
+      margin-left: .8rem;
+      padding: .5rem;
+      width: 95%;
+      height: 7rem;
+      border: none;
+    }
+    form{
+      padding:0rem 1rem 1rem 1rem;
+    }
+    button{
+      @include btn(.8rem,rgb(19, 19, 19),white);
+      border-radius: 5px;
+      margin: 1rem 0rem 0rem 1.5rem;
+      width: 90%;
+      font-size: .8rem;
+      text-transform: uppercase;
+      &:hover{
+          opacity: 0.9;
+      }
+  }
+ }
+  >section{
+    max-width:1920px;
+    width: 100%;
+    margin: auto;
+    .review{
+      background-color:rgba(154,154,154,0.38);
+      display: flex;
+      flex-direction:column;
+      width:30rem;
+      flex:none;
+      position: relative;
+      padding:.5rem;
+      border-radius:10px;
+      ::-webkit-scrollbar{display: none;}
+      small{
+        color: rgb(0, 68, 255);
+      }
+      >button{
+        position: absolute;
+        top: -0.5rem;
+        right:-0.4rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: rgb(38, 38, 38);
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: .8rem;
+      }
+    }
+    >article{
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      >button{
+        background-color: black;
+        border-radius: 50%;
+        color: white;
+        width: 3rem;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        border: none;
+        cursor: pointer;
+      }
+      >h2{
+        @include heading;
+      }
+    }
+  }
+  .relatedProduct{
+         display: flex;
+         overflow-y: auto;
+         gap:.2rem
+  }
+}
+
+.sliderArrow {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 10px;
+  padding: 0.5rem;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.reviewContainer{
+  display:flex;
+  gap:2rem;
+  overflow-y:auto;
+  padding:1rem;
+}
+

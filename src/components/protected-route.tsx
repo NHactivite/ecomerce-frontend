@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import toast from "react-hot-toast";
 import { Navigate, Outlet } from "react-router-dom";
 
 interface Props{
@@ -12,7 +13,10 @@ interface Props{
 
 const ProtectedRoute = ({isAuthenticated,children,adminRoute,isAdmin,redirect="/"}:Props) => {
    
-    if(!isAuthenticated) return <Navigate to={redirect}/>
+    if(!isAuthenticated) {
+      toast.error("Login First")
+     return <Navigate to={redirect}/>
+    }
 
     if(adminRoute && !isAdmin )return <Navigate to={redirect}/>
 

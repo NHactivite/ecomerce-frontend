@@ -1,9 +1,9 @@
+import { Navigate, useParams } from 'react-router-dom'
 import { Skeleton } from '../components/Loader'
-import { Link, Navigate, useParams } from 'react-router-dom'
 import { useOrderDetalisQuery } from '../redux/api/orderAPI'
 import { server } from '../redux/store'
-import { Order } from '../types/types'
 import { OrderItemType } from '../types'
+import { Order } from '../types/types'
 
 const defaultData:Order={
     shippingInfo:{
@@ -17,7 +17,6 @@ const defaultData:Order={
        subtotal:0,
        discount:0,
        shippingCharges:0,
-       tax:0,
        total:0,
        orderItems:[],
        userId:"",
@@ -28,7 +27,7 @@ const OrderDetalis = () => {
     const params=useParams()
     const {isLoading,data,isError}=useOrderDetalisQuery(params.id!);
 
-    const {shippingInfo:{address,city,country,state,pinCode},orderItems,status,discount,tax,total,shippingCharges,subtotal}=data?.order || defaultData;
+    const {shippingInfo:{address,city,country,state,pinCode},orderItems,status,discount,total,shippingCharges,subtotal}=data?.order || defaultData;
    
     
     if (isError) return (
@@ -46,7 +45,7 @@ const OrderDetalis = () => {
                  <h2>Order Items</h2>
                     {
                       orderItems.map((i)=>(
-                        <ProductCard key={i._id} name={i.name} photo={`${server}/${i.photo}`} price={i.price} quantity={i.quantity} _id={i._id}/>
+                        <ProductCard key={i._id} name={i.name} photo={i.photos} price={i.price} quantity={i.quantity} _id={i._id}/>
                       ))
                     }
                </section>
@@ -57,7 +56,6 @@ const OrderDetalis = () => {
                 <p>Amount Info </p>
                 <p>Subtotal : {subtotal}</p>
                 <p>ShippingCharges : {shippingCharges}</p>
-                <p>Tax : {tax}</p>
                 <p>Discount : {discount}</p>
                 <p>Total : {total}</p>
                 <p> Status:{" "} 
@@ -70,7 +68,7 @@ const OrderDetalis = () => {
     </div>
   )
 }
-const ProductCard=({name,photo,price,quantity,_id}:OrderItemType)=>(
+const ProductCard=({name,photo,price,quantity}:OrderItemType)=>(
     <div className="transactionProductCard">
       <img src={photo} alt={name} /> 
       {/* <Link to={`/product/${_id}`}>{name}</Link> */}

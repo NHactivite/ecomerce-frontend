@@ -1,4 +1,4 @@
-import { Bar, CartItem, Line, Order, Pie, Product, ShippingInfo, Stats, User } from "./types"
+import { Bar, CartItem, CouponType, Line, Order, Pie, Product, Reviews, ShippingInfo, Stats, User, WishProduct } from "./types"
 
 export type CustomError={
     status:number,
@@ -41,11 +41,23 @@ export type AllProductResponse={
     success:boolean,
     product:Product[],
 }
+export type AllReviewsResponse={
+    success:boolean,
+    reviews:Reviews[],
+}
 
 
 export type CategoriesResponse={
     success:boolean,
     categories:string[],
+}
+export type BrandsResponse={
+    success:boolean,
+    Brands:string[],
+}
+export type WishResponse={
+    success:boolean,
+    wish:WishProduct[],
 }
 
 
@@ -77,16 +89,45 @@ export type LineResponse={
 }
 
 export type SearchProductRequest={
-   price:number,
-   page:number,
-   category:string,
-   search:string,
-   sort:string,
+   price?:number,
+   page?:number,
+   category?:string,
+   search?:string,
+   sort?:string,
+}
+
+export type newReviewRequest={
+    rating:number,
+    comment:string,
+    userId:string,
+    productId:string
+}
+
+export type newWishRequest={
+    userId:string,
+    productId:string
+}
+export type deleteReviewRequest={
+    reviewId:string,
+    userId?:string,
 }
 
 export type newProductRequest={
     id:string,
     formData:FormData;
+}
+export type newCouponRequest={
+    _id:string,
+    Payload:CouponType;
+}
+export type oneCouponRequest={
+    userId:string,
+    couponId:string
+}
+export type updateCouponRequest={
+    userId:string,
+    couponId:string
+    Payload:CouponType;
 }
 
 export type updateProductRequest={
@@ -106,7 +147,6 @@ export type NewOrderRequest={
     subtotal:number,
     shippingCharges:number,
     total:number,
-    tax:number,
     discount:number,
     shippingInfo:ShippingInfo;
     userId:string;
@@ -119,4 +159,11 @@ export type DeleteUserRequest={
     userId:string,
     adminUserId:string,
 }
-
+export type AllDiscountResponse={
+    success:boolean,
+    coupons:CouponType[]
+}  
+export type oneDiscountResponse={
+    success:boolean,
+    coupon:CouponType
+}  

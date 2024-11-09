@@ -1,21 +1,25 @@
 import { ReactElement, useEffect, useState } from "react";
-import AdminSideBar from "../../components/Admin/AdminSideBar"
-import TableHOC from "../../components/Admin/TableHOC"
-import { Column } from "react-table";
-import { Link } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
-import { useAllProductsQuery } from "../../redux/api/productAPI";
-import { server } from "../../redux/store";
 import toast from "react-hot-toast";
-import { CustomError } from "../../types/api-types";
+import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { UserReducerInitialState } from "../../types/reducers-types";
+import { Link } from "react-router-dom";
+import { Column } from "react-table";
+import AdminSideBar from "../../components/Admin/AdminSideBar";
+import TableHOC from "../../components/Admin/TableHOC";
 import { Skeleton } from "../../components/Loader";
+import { useAllProductsQuery } from "../../redux/api/productAPI";
+import { CustomError } from "../../types/api-types";
+import { UserReducerInitialState } from "../../types/reducers-types";
 interface DataType{
   photo:ReactElement;
   name:string;
   price:number;
   stock:number;
+  brand:string;
+ os:string;
+ ram:number;
+ cpu_model:string;
+ cpu_speed:string;
   action:ReactElement;
 }
 
@@ -37,9 +41,29 @@ const columns:Column<DataType>[]=[
   accessor:"stock",
   },
   {
-  Header:"Action",
-  accessor:"action",
-  }
+  Header:"Brand",
+  accessor:"brand",
+  },
+  {
+  Header:"Os",
+  accessor:"os",
+  },
+  {
+  Header:"RAM",
+  accessor:"ram",
+  },
+  {
+  Header:"CPU_Model",
+  accessor:"cpu_model",
+  },
+  {
+  Header:"CPU_Speed",
+  accessor:"cpu_speed",
+  },
+  {
+    Header:"Action",
+    accessor:"action"
+  },
 ]
 
 
@@ -57,10 +81,15 @@ const Products = () => {
     if(data && data.product) {
     setRows(data.product.map((i)=>(
     {
-    photo: <img src={`${server}/${i.photo}`}/>,
+    photo: <img src={i.photos?.[0]?.url}/>,
     name:i.name,
     price:i.price,
     stock:i.stock,
+    brand:i.brand,
+    ram:i.ram,
+    cpu_model:i.cpu_model,
+    cpu_speed:i.cpu_speed,
+    os:i.os,
     action: <Link to={`/admin/product/${i._id}`}>Manage</Link>,
     }
     )) 

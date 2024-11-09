@@ -4,6 +4,7 @@ import { AiFillFileText } from "react-icons/ai";
 import { FaChartBar, FaChartLine, FaChartPie } from "react-icons/fa";
 import { HiMenuAlt4 } from "react-icons/hi";
 import { IoIosPeople } from "react-icons/io";
+import { MdDiscount } from "react-icons/md";
 import { RiCoupon3Fill, RiDatabaseFill, RiShoppingBag3Fill } from "react-icons/ri";
 import { Link, Location, useLocation } from "react-router-dom";
 
@@ -54,6 +55,7 @@ const DivOne=({location}:{location:Location})=>(
     <Li url="/admin/product" text="Products" Icon={RiShoppingBag3Fill} location={location}/>
     <Li url="/admin/customer" text="Customers" Icon={IoIosPeople} location={location}/>
     <Li url="/admin/transaction" text="Transactions" Icon={AiFillFileText} location={location}/>
+    <Li url="/admin/discount" text="Discount" Icon={MdDiscount} location={location}/>
   </ul>
 </div>
 )

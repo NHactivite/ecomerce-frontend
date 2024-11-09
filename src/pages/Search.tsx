@@ -1,16 +1,23 @@
 import {  useEffect, useState } from "react"
 import ProductCard from "./ProductCard";
-import { useCategoroesQuery, useSearchProductsQuery } from "../redux/api/productAPI";
-import { CustomError } from "../types/api-types";
+import { useCategoroesQuery, useNewWishMutation, useSearchProductsQuery } from "../redux/api/productAPI";
+import { CustomError, newWishRequest } from "../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../components/Loader";
 import { CartItem } from "../types/types";
 import { addToCart } from "../redux/reducer/cartReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HiMenuAlt4 } from "react-icons/hi";
-
-
+import {useSearchParams } from "react-router-dom";
+import { darkReducerInitialState, UserReducerInitialState } from "../types/reducers-types";
+import { responseToast } from "../utils/features";
 const Search = () => {
+  const {user}=useSelector((state:{userReducer:UserReducerInitialState})=>state.userReducer)
+
+  const {dark}=useSelector((state:{darkReducer:darkReducerInitialState})=>state.darkReducer)
+  
+  const [addWish]=useNewWishMutation()
+  
   // ---------------for mobile---------
   const [showModel,setModel]=useState<boolean>(false);
   const[phoneActive,setPhonActive]=useState<boolean>(window.innerWidth < 1100);
@@ -18,6 +25,7 @@ const Search = () => {
     setPhonActive(window.innerWidth < 1100);
   }
   useEffect(()=>{
+      window.scrollTo(0, 0);
     window.addEventListener("resize",resetHandler);
     return()=>{
       window.removeEventListener("resize",resetHandler)
@@ -30,11 +38,22 @@ const Search = () => {
    const dispatch=useDispatch();
   const {data:categoriesResponse,isLoading,isError:categoriesError,error:categoriesErrorData}=useCategoroesQuery("")
 
-  const [search,setsearch]=useState<string>("");
-  const [maxPrice,setMaxPrice]=useState<number>(10000);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSearchQuery = searchParams.get('search') || '';
+  
+  const [search,setsearch]=useState<string>(initialSearchQuery);
+  
+  useEffect(() => {
+    if (search !== initialSearchQuery) {
+      setSearchParams({ search }); // Update the URL query parameter without refreshing the page
+    }
+  }, [search, initialSearchQuery, setSearchParams]);
+  
+  const [maxPrice,setMaxPrice]=useState<number>(50000);
   const [sort,setSort]=useState<string>("");
   const [category,setCategory]=useState<string>("");
   const [page,setPage]=useState<number>(1);
+
 
   const {data:searchData,isLoading:searchLoading,isError:searchError,error:searchErrorData}=useSearchProductsQuery({search,sort,price:maxPrice,page,category})
    
@@ -43,6 +62,10 @@ const Search = () => {
     dispatch(addToCart(cartItem))
     toast.success("Added to Cart")
  }
+ const addWishHandler = async (newWishRequest: newWishRequest) => {
+  const res = await addWish(newWishRequest);
+  responseToast(res,null,"");
+}
  const isNextPage=page < 5;
  const isPrevPage=page > 1;
  
@@ -52,7 +75,7 @@ const Search = () => {
 
 
   return (
-    <div className="productSearchPage">
+    <div  className={`productSearchPage ${dark ? 'dark' : ''}`}>
 
           {/* moblile */}
 <>
@@ -60,18 +83,17 @@ const Search = () => {
     <aside style={phoneActive ?
     {
       width:"20rem",
-      height:"70vh",
+      // height:"40vh",
       position:"fixed",
-      top:60,
+      top:60, 
       left:showModel?"0":"-20rem",
       transition:"all 0.5s",
-       
     }:{}}>
-     <aside>
+     <aside className={`${dark ? 'dark' : "serchBargar"}`}>
          <h2>Filters</h2>
          <div>
            <h4>Sorts</h4>
-           <select value={sort} onChange={(e)=>setSort(e.target.value)}>
+           <select value={sort} onChange={(e)=>setSort(e.target.value)} className={`${dark ? 'darkHeader' : ''}`}>
               <option value="">None</option>
               <option value="asc">Price(Low to High)</option>
               <option value="dsc">Price(High to Low)</option>
@@ -79,12 +101,12 @@ const Search = () => {
          </div>
          <div>
            <h4>Max Price: {maxPrice || ""}</h4>
-           <input type="range" min={50} max={10000} value={maxPrice} onChange={(e)=>setMaxPrice(Number(e.target.value))}/>
+           <input type="range" min={2000} max={50000} value={maxPrice} onChange={(e)=>setMaxPrice(Number(e.target.value))}/>
          </div>
 
          <div>
            <h4>Category</h4>
-           <select value={category} onChange={(e)=>setCategory(e.target.value)}>
+           <select value={category} onChange={(e)=>setCategory(e.target.value)} className={`${dark ? 'darkHeader' : ''}`}>
               <option value="">All</option>
               {
                 !isLoading && categoriesResponse?.categories?.map((i)=>(
@@ -94,22 +116,26 @@ const Search = () => {
               
            </select>
          </div>
-       </aside>
+      
         {
     phoneActive&&<button id="closeSideBar" onClick={()=>setModel(false)}>Cloes</button>
   }
+   </aside>
   </aside>
    </>
- {/* ---------------- */}
+ {/* -------.darkBtn--------- */}
 
        <main>
          <h1>Products</h1>
-         <input type="text" placeholder="Search by name...." value={search} onChange={(e)=>setsearch(e.target.value)} />
+         <input type="text" placeholder="Search...." value={search} 
+         onChange={(e)=> setsearch(e.target.value)} 
+         className={`${dark ? 'darkBtn' : ''}`}
+    />
         {
           searchLoading?(<Skeleton/>):( <div className="searchProductList">
             {
              searchData?.products?.map((i)=>(
-               <ProductCard key={i._id} name={i.name} price={i.price} stock={i.stock} productId={i._id} photo={i.photo} handler={addCartHandler}/>
+               <ProductCard key={i._id} name={i.name} price={i.price} stock={i.stock} productId={i._id} photos={i.photos} handler={addCartHandler} wishHandler={addWishHandler} userId={user?._id!} />
              ))
             }
  

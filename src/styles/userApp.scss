@@ -4,10 +4,32 @@
 @import "shipping";
 @import "login";
 @import "search";
+@import "_productDetails";
+@import "footer";
+
+.dark{
+    color: white !important;
+    background-color: #3f3939 !important;
+}
+.darkHeader{
+    color: white !important;
+    background-color: rgb(30, 27, 27) !important
+}
+.darkList{
+    color: white !important;
+}
+.darkBtn{
+    background-color:  rgba(154,154,154,0.38) !important;
+    color: white !important;
+}
 
 .header{
    @include flex(row,flex-end,stretch,1.2rem);
 //    box-shadow: rgba(50, 50, 93, 0.25) 0px .5px 5px 0px;
+background-color: white;
+position: sticky;
+top: 0;
+z-index: 999;
    padding: 1rem;
    a{
     color: rgb(46,46,46);
@@ -21,9 +43,14 @@
 
    button{
     border: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
-    background-color: transparent;
+    background-color:white;
+    width: 1.5rem;
+    height:1.5rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
     &:hover{
         color: rgb(57, 57, 57);
     }
@@ -41,7 +68,9 @@
         @include flex(column,flex-start,center,0.25rem)
     }
    }
-   
+   span{
+    font-size: 1.3rem;
+}
 } 
 
 .heading{
@@ -61,4 +90,5 @@
         margin: 1rem 0;
         text-align: left;
     }
+    
 }

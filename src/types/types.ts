@@ -7,15 +7,42 @@ export type User = {
   dob: string;
   _id: string;
 };
-
 export type Product = {
   name: string;
   category: string;
-  photo: string;
+  photos:{
+    public_id:string,
+    url:string
+  }[];
   price: number;
   stock: number;
   _id: string;
+  description:string;
+  rating:number;
+  numOfReviews:number;
+  brand:string;
+ os:string;
+ ram:number;
+ cpu_model:string;
+ cpu_speed:string;
 };
+export type Reviews = {
+  comment:string;
+  productId:string
+  user:{
+    name:string,
+    photo:string
+    _id:string
+  }
+  _id: string;
+  rating:number;
+  numOfReviews:number
+};
+export type WishProduct={
+   wish:boolean;
+   user:string;
+   Product:string;
+}
 
 export type ShippingInfo = {
   address: string;
@@ -27,7 +54,7 @@ export type ShippingInfo = {
 
 export type CartItem = {
   productId: string;
-  photo: string;
+  photos:string;
   name: string;
   price: number;
   quantity: number;
@@ -42,7 +69,6 @@ export type Order = {
   subtotal: number;
   shippingCharges: number;
   total: number;
-  tax: number;
   discount: number;
   status: string;
   _id: string;
@@ -121,3 +147,11 @@ export type Line={
       disCount:number[],
       revenue:number[]
 }
+
+export type CouponType={
+      _id:string,
+      code:string,
+      amount:number,
+      
+}
+

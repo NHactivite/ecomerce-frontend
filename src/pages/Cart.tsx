@@ -1,20 +1,21 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItems from "../components/cartItems";
 import { addToCart, calculatePrice, discountApplied, removeCartItem } from "../redux/reducer/cartReducer";
-import { CartReducerInitialState } from "../types/reducers-types";
-import { CartItem } from "../types/types";
-import axios from "axios";
 import { server } from "../redux/store";
+import { CartReducerInitialState, darkReducerInitialState } from "../types/reducers-types";
+import { CartItem } from "../types/types";
 
 const Cart = () => {
 
   const dispatch=useDispatch()
 
-  const {cartItems,subtotal,shippingCharges,tax,total,discount}=useSelector((state:{cartReducer:CartReducerInitialState})=>state.cartReducer)
-
+  const {cartItems,subtotal,shippingCharges,total,discount}=useSelector((state:{cartReducer:CartReducerInitialState})=>state.cartReducer)
+  const {dark}=useSelector((state:{darkReducer:darkReducerInitialState})=>state.darkReducer)
+ 
   const [couponCode, setcouponCode] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
 
@@ -32,14 +33,19 @@ const Cart = () => {
  }
  
   useEffect(()=>{
-           
+    
+      window.scrollTo(0, 0);
+      
     const {token,cancel}=axios.CancelToken.source()
 
          const TimeoutId=setTimeout(()=>{
-            
+          let BasePrice=0;
           axios.get(`${server}/api/v1/payment/discount/${couponCode}`,{cancelToken:token})
           .then((res)=>{
-            dispatch(discountApplied(res.data.discount));
+             BasePrice=total-res.data.discount
+            if(BasePrice>200){
+              dispatch(discountApplied(res.data.discount))
+            }
             setIsValid(true);
             dispatch(calculatePrice()) 
           })
@@ -64,7 +70,7 @@ const Cart = () => {
 
 
   return (
-    <div className="cart">
+    <div className={`cart ${dark ? 'dark' : ''}`}>
       <main>
         {
          cartItems.length >0 ? ( cartItems.map((i,idx)=>(
@@ -72,14 +78,12 @@ const Cart = () => {
         ))) :(<h1>No Items Add</h1>)
         }
       </main>
-      <aside>
+      <aside className={`${dark ? 'darkHeader' : ''}`}>
         <div>
         <p>Subtotal: &#x20B9;{subtotal}</p>
         <p>Shipping Charges: &#x20B9;{shippingCharges}</p>
-        <p>Tax: &#x20B9;{tax}</p>
-
         <p>
-          Discount: <em className="red"> - &#x20B9;{discount}</em>
+          Discount: <em className="red">{`- ${discount}`}</em>
         </p>
         <p>
           <b>Total :&#x20B9; {total}</b>
@@ -90,12 +94,13 @@ const Cart = () => {
           placeholder="Coupon Code"
           value={couponCode}
           onChange={(e) => setcouponCode(e.target.value)}
+          className={`${dark ? 'dark' : ''}`}
         />
 
         {couponCode &&
           (isValid ? (
             <span className="green">
-              &#x20B9;{discount} off using the <code>{couponCode}</code>
+            {`${discount} off using the`} <code>{couponCode}</code>
             </span>
           ) : (
             <span className="red">

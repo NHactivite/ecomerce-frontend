@@ -1,5 +1,5 @@
 import {createApi,fetchBaseQuery} from "@reduxjs/toolkit/query/react"
-import { AllProductResponse, CategoriesResponse, deleteProductRequest, MeassegeRespone, newProductRequest, ProductResponse, SearchProductRequest, SearchProductResponse, updateProductRequest } from "../../types/api-types";
+import { AllProductResponse, AllReviewsResponse, BrandsResponse, CategoriesResponse, deleteProductRequest, deleteReviewRequest, MeassegeRespone, newProductRequest, newReviewRequest, newWishRequest, ProductResponse, SearchProductRequest, SearchProductResponse, updateProductRequest, WishResponse } from "../../types/api-types";
 
 
 
@@ -12,9 +12,17 @@ export const productAPI=createApi({
             latestProducts:builder.query<AllProductResponse,string>({query:()=>"latest",providesTags:["product"]}),
 
             AllProducts:builder.query<AllProductResponse,string>({query:(id)=>`admin-products?id=${id}`,providesTags:["product"]}),
+          
+            categoroes:builder.query<CategoriesResponse,string>({query:()=>`categories`,providesTags:["product"]
+            }),
+            brands:builder.query<BrandsResponse,string>({query:()=>`brands`,providesTags:["product"]}),
 
-            categoroes:builder.query<CategoriesResponse,string>({query:()=>`categories`,providesTags:["product"]}),
-
+            getWishList:builder.query<WishResponse,string>({query:(userId)=>`wish?id=${userId}`,providesTags:["product"]}),
+            
+            productReview:builder.query<AllReviewsResponse,string>({
+              query:(productId)=>`/reviews/${productId}`,
+              providesTags:["product"]
+            }),
            SearchProducts:builder.query<SearchProductResponse,SearchProductRequest>({
             query:({price,page,search,sort,category}) => {
 
@@ -54,10 +62,32 @@ export const productAPI=createApi({
             url:`${productId}?id=${userId}`,
              method:"DELETE",
          }),
+
          invalidatesTags:["product"]
                  }),
 
+          newReview:builder.mutation<MeassegeRespone,newReviewRequest>({query:({comment,rating,productId,userId})=>({
+            url:`review/new/${productId}?id=${userId}`,
+             method:"POST",
+             body:{
+              comment,
+              rating
+             }
+         }),
+         invalidatesTags:["product"]
+                 }),
+          newWish:builder.mutation<MeassegeRespone,newWishRequest>({query:({productId,userId})=>({
+               url:`wish/new/${productId}?id=${userId}`,
+               method:"POST",
+          })}),
+          deleteReview:builder.mutation<MeassegeRespone,deleteReviewRequest>({query:({reviewId,userId})=>({
+            url:`review/${reviewId}?id=${userId}`,
+             method:"DELETE",
+         }),
+         invalidatesTags:["product"]
+                 }),
+       
         }),
   });
 
-   export const {useLatestProductsQuery,useAllProductsQuery,useCategoroesQuery,useSearchProductsQuery,useNewProductMutation,useProductDetailsQuery,useDeleteProductMutation,useUpdateProductMutation}=productAPI
+   export const {useGetWishListQuery,useNewWishMutation,useBrandsQuery,useLatestProductsQuery,useAllProductsQuery,useCategoroesQuery,useSearchProductsQuery,useNewProductMutation,useProductDetailsQuery,useDeleteProductMutation,useUpdateProductMutation,useProductReviewQuery,useNewReviewMutation,useDeleteReviewMutation}=productAPI

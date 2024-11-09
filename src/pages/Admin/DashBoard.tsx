@@ -1,11 +1,8 @@
 import toast from "react-hot-toast"
 import { BiMaleFemale } from "react-icons/bi"
-import { BsSearch } from "react-icons/bs"
-import { FaRegBell } from "react-icons/fa"
 import { HiTrendingDown, HiTrendingUp } from "react-icons/hi"
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom"
-import UserImg from "../../assets/Admin/UserImg.png"
 import AdminSideBar from "../../components/Admin/AdminSideBar"
 import ChartComponent, { DoughnutChart } from "../../components/Admin/Charts"
 import DashBoardTable from "../../components/Admin/DashBoardTable"
@@ -31,12 +28,12 @@ const DashBoard = () => {
         isLoading?<Skeleton/>:
         <>
         <div className="barContainer">
-       <div className="bar">
+       {/* <div className="bar">
           <BsSearch/>
           <input type="text" placeholder="Search for data, users, docs"/>
           <FaRegBell/>
           <img src={user?.photo || UserImg} alt="userImg"/>
-        </div>
+        </div> */}
        </div>
         <section className="widgetContainer">
            <WigetItem heading="Reveneu" amount={true} color="green" percent={stats.count.revenue} value={stats.count.revenue} /> 

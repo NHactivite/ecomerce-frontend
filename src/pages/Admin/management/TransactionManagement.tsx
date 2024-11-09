@@ -4,7 +4,6 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
 import AdminSideBar from "../../../components/Admin/AdminSideBar"
 import { Skeleton } from "../../../components/Loader"
 import { useDeleteOrderMutation, useOrderDetalisQuery, useUpdateOrderMutation } from "../../../redux/api/orderAPI"
-import { server } from "../../../redux/store"
 import { OrderItemType } from "../../../types"
 import { UserReducerInitialState } from "../../../types/reducers-types"
 import { Order } from "../../../types/types"
@@ -22,7 +21,6 @@ const defaultData:Order={
      subtotal:0,
      discount:0,
      shippingCharges:0,
-     tax:0,
      total:0,
      orderItems:[],
      userId:"",
@@ -38,8 +36,8 @@ const TransactionManagement = () => {
   
   
   const {isLoading,data,isError}=useOrderDetalisQuery(params.id!);
-   
-  const {shippingInfo:{address,city,country,state,pinCode},orderItems,status,discount,tax,total,shippingCharges,subtotal}=data?.order || defaultData;
+ 
+  const {shippingInfo:{address,city,country,state,pinCode},orderItems,status,discount,total,shippingCharges,subtotal}=data?.order || defaultData;
   
   const [updateOrder]=useUpdateOrderMutation()
   const [deleteOrder]=useDeleteOrderMutation()
@@ -76,7 +74,7 @@ const TransactionManagement = () => {
                  <h2>Order Items</h2>
                     {
                       orderItems.map((i)=>(
-                        <ProductCard key={i._id} name={i.name} photo={`${server}/${i.photo}`} price={i.price} quantity={i.quantity} _id={i._id}/>
+                        <ProductCard key={i._id} name={i.name} photo={i.photos} price={i.price} quantity={i.quantity} _id={i._id}/>
                       ))
                     }
                </section>
@@ -87,7 +85,6 @@ const TransactionManagement = () => {
                 <p>Amount Info </p>
                 <p>Subtotal : {subtotal}</p>
                 <p>ShippingCharges : {shippingCharges}</p>
-                <p>Tax : {tax}</p>
                 <p>Discount : {discount}</p>
                 <p>Total : {total}</p>
                 <p> Status:{" "} 
