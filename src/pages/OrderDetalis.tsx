@@ -1,7 +1,7 @@
 import { Navigate, useParams } from 'react-router-dom'
 import { Skeleton } from '../components/Loader'
+
 import { useOrderDetalisQuery } from '../redux/api/orderAPI'
-import { server } from '../redux/store'
 import { OrderItemType } from '../types'
 import { Order } from '../types/types'
 
