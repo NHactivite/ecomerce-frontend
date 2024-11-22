@@ -1,13 +1,13 @@
 import { load } from "@cashfreepayments/cashfree-js";
 import axios from "axios";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { BiArrowBack } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useNewOrderMutation } from "../redux/api/orderAPI";
 import { resetCart, saveShippingInfo } from "../redux/reducer/cartReducer";
-import { NewOrderRequest } from "../types/api-types";
 import {
   CartReducerInitialState,
   darkReducerInitialState,
@@ -15,13 +15,22 @@ import {
 } from "../types/reducers-types";
 import { responseToast } from "../utils/features";
 
+type ShippingFormInputs = {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pinCode: string;
+  phnNo: string;
+};
+
 const Shipping = () => {
-  let navigate = useNavigate();
-  const { cartItems, total, subtotal, discount, shippingCharges } =
-    useSelector(
-      (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
-    );
-    
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cartItems, total, subtotal, discount, shippingCharges } = useSelector(
+    (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
+  );
+
   const { dark } = useSelector(
     (state: { darkReducer: darkReducerInitialState }) => state.darkReducer
   );
@@ -29,57 +38,24 @@ const Shipping = () => {
   const { user } = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
-  const dispatch = useDispatch();
-  const [disable, setDisable] = useState<boolean>(true);
+
   const [newOrder] = useNewOrderMutation();
   const [loading, setLoading] = useState(false);
-  const [shippingInfo, setShippingInfo] = useState({
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    pinCode: "",
-    phnNo: "",
+  const cashfreeRef = useRef<any>(null);
+
+  const { register, handleSubmit, formState: { errors }, watch,getValues } = useForm<ShippingFormInputs>({
+    defaultValues: {
+      address: "",
+      city: "",
+      state: "",
+      country: "",
+      pinCode: "",
+      phnNo: "",
+    },
   });
 
+  // Initialize Cashfree SDK
   useEffect(() => {
-    const { address, city, state, country, pinCode, phnNo } = shippingInfo;
-    if (
-      address &&
-      city &&
-      state &&
-      country &&
-      pinCode &&
-      phnNo.length &&
-      cartItems.length > 0
-    ) {
-      setDisable(false); // Enable button
-    } else {
-      setDisable(true); // Disable button
-    }
-  }, [cartItems, shippingInfo]);
-
-  const changeHandler = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    e.preventDefault();
-    setShippingInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  //          payment---------------------------------------
-  const orderData: NewOrderRequest = {
-    shippingInfo,
-    orderItems: cartItems,
-    subtotal,
-    discount,
-    shippingCharges,
-    total,
-    userId: user?._id!,
-  };
-
-  const cashfreeRef = useRef<any>(null); // Reference for Cashfree SDK
-  useEffect(() => {
-    // Initialize SDK only once on component mount
     const initializeSDK = async () => {
       try {
         if (!cashfreeRef.current) {
@@ -92,7 +68,7 @@ const Shipping = () => {
       }
     };
     initializeSDK();
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
   const getSessionId = async () => {
     try {
@@ -100,145 +76,142 @@ const Shipping = () => {
         `${import.meta.env.VITE_SERVER}/api/v1/payment/pay`,
         {
           customer_id: user?._id,
-          order_items:cartItems,
-          discount:discount,
-          customer_phone: shippingInfo.phnNo,
+          order_items: cartItems,
+          discount: discount,
+          customer_phone: watch("phnNo"),
         }
       );
 
       if (res.data && res.data.payment_session_id) {
         return {
           paymentSessionId: res.data.payment_session_id,
-          orderId: res.data.order_id, // Return order_id directly
+          orderId: res.data.order_id,
           order_status: res.data.order_status,
         };
       }
     } catch (error) {
-      toast.error("something Wrong");
+      setLoading(false);
     }
   };
-  // Function to verify payment status
-  const verifyPayment = async (_id: string) => {
+
+  const verifyPayment = async (orderId: string) => {
     try {
       let res = await axios.post(
         `${import.meta.env.VITE_SERVER}/api/v1/payment/verify`,
         {
-          order_id: _id,
+          order_id: orderId,
         }
       );
       if (res && res.data[0].payment_status === "SUCCESS") {
-        toast.success("payment verified");
-        const response = await newOrder(orderData);
-        
+        toast.success("Payment verified");
+        const response = await newOrder({
+          shippingInfo: getValues(),
+          orderItems: cartItems,
+          subtotal,
+          discount,
+          shippingCharges,
+          total,
+          userId: user?._id!,
+        });
         responseToast(response, navigate, "/");
         dispatch(resetCart());
       }
     } catch (error) {
+      setLoading(false);
       toast.error("Payment verification failed");
     }
   };
 
-  // Main function to handle payment initiation
-  const handleClick = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    if (loading) return; // Prevent multiple clicks
+  const onSubmit: SubmitHandler<ShippingFormInputs> = async (data) => {
+    if (loading) return;
     setLoading(true);
-    dispatch(saveShippingInfo(shippingInfo));
+    dispatch(saveShippingInfo(data));
+
     if (!cashfreeRef.current) {
       toast.error("Payment gateway not loaded. Please try again.");
       setLoading(false);
       return;
     }
+
     try {
       let sessionId = await getSessionId();
-      if (!sessionId) return; // Stop if session ID fetch failed
+      if (!sessionId) return;
+
       let checkoutOptions = {
-        paymentSessionId: sessionId?.paymentSessionId,
+        paymentSessionId: sessionId.paymentSessionId,
         redirectTarget: "_modal",
       };
       cashfreeRef.current.checkout(checkoutOptions).then(() => {
-        verifyPayment(sessionId?.orderId); // Now it's safe to verify the payment
+        verifyPayment(sessionId.orderId);
       });
     } catch (error) {
-      toast.error("payment failed");
+      toast.error("Payment failed.");
     }
   };
-
-  //--------------------------------------------------------
 
   return (
     <div className={`shipping ${dark ? "dark" : ""}`}>
       <button className="backBtn" onClick={() => navigate("/cart")}>
         <BiArrowBack />
       </button>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <h1>Shipping Address</h1>
         <input
           type="text"
           placeholder="Address"
-          name="address"
-          value={shippingInfo.address}
-          onChange={changeHandler}
-          required
+          {...register("address", { required: "Address is required" })}
         />
+        {errors.address && <p>{errors.address.message}</p>}
+
         <input
           type="text"
           placeholder="City"
-          name="city"
-          value={shippingInfo.city}
-          onChange={changeHandler}
-          required
+          {...register("city", { required: "City is required" })}
         />
+        {errors.city && <p>{errors.city.message}</p>}
+
         <input
           type="text"
           placeholder="State"
-          name="state"
-          value={shippingInfo.state}
-          onChange={changeHandler}
-          required
+          {...register("state", { required: "State is required" })}
         />
+        {errors.state && <p>{errors.state.message}</p>}
+
         <input
           type="text"
           placeholder="Country"
-          name="country"
-          value={shippingInfo.country}
-          onChange={changeHandler}
-          required
+          {...register("country", { required: "Country is required" })}
         />
-        <select
-          name="country"
-          required
-          value={shippingInfo.country}
-          onChange={changeHandler}
-        >
-          <option value="">Choose Country</option>
-          <option value="india">India</option>
-        </select>
+        {errors.country && <p>{errors.country.message}</p>}
+
         <input
           type="number"
           placeholder="Pincode"
-          name="pinCode"
-          value={shippingInfo.pinCode}
-          onChange={changeHandler}
-          required
+          {...register("pinCode", {
+            required: "Pincode is required",
+            minLength: { value: 6, message: "Pincode must be 6 digits" },
+            maxLength: { value: 6, message: "Pincode must be 6 digits" },
+          })}
         />
+        {errors.pinCode && <p>{errors.pinCode.message}</p>}
+
         <input
           type="number"
-          placeholder="Phn NO"
-          name="phnNo"
-          value={shippingInfo.phnNo}
-          onChange={changeHandler}
-          required
+          placeholder="Phone Number"
+          {...register("phnNo", {
+            required: "Phone number is required",
+            minLength: { value: 10, message: "Phone number must be 10 digits" },
+            maxLength: { value: 10, message: "Phone number must be 10 digits" },
+          })}
         />
+        {errors.phnNo && <p>{errors.phnNo.message}</p>}
+
         <button
           type="submit"
-          onClick={handleClick}
-          disabled={disable}
+          disabled={loading || cartItems.length === 0}
           className={`${dark ? "payDarkbtn" : "paybtn"}`}
         >
-          Pay Now
+          {loading ? "Processing..." : "Pay Now"}
         </button>
       </form>
     </div>

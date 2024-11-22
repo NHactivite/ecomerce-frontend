@@ -30,8 +30,11 @@ const Cart = () => {
  }
   const removeHandler=(productId:string)=>{
     dispatch(removeCartItem(productId))
+    if (couponCode) {
+      setcouponCode("");  // Clear the coupon code if it's set
+  }
  }
- 
+
   useEffect(()=>{
     
       window.scrollTo(0, 0);
@@ -40,6 +43,7 @@ const Cart = () => {
 
          const TimeoutId=setTimeout(()=>{
           let BasePrice=0;
+          
           axios.get(`${server}/api/v1/payment/discount/${couponCode}`,{cancelToken:token})
           .then((res)=>{
              BasePrice=total-res.data.discount
@@ -62,11 +66,7 @@ const Cart = () => {
       cancel();
       setIsValid(false)
      }
-  },[couponCode])
-
- useEffect(()=>{
-     dispatch(calculatePrice())  
- },[cartItems])
+  },[couponCode,cartItems])
 
 
   return (

@@ -86,7 +86,7 @@ const App = () => {
           <Route
             path="/login"
             element={
-              <ProtectedRoute isAuthenticated={user ? false : true}>
+              <ProtectedRoute isAuthenticated={user ? false : true} login={false}>
                 <Login />
               </ProtectedRoute>
             }
@@ -95,7 +95,7 @@ const App = () => {
           {/* Logged in user routes */}
 
           <Route
-            element={<ProtectedRoute isAuthenticated={user ? true : false} />}
+            element={<ProtectedRoute isAuthenticated={user ? true : false} login={true}/>}
           >
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/order" element={<Order />} />
@@ -109,6 +109,7 @@ const App = () => {
                 isAuthenticated={true}
                 adminRoute={true}
                 isAdmin={user?.role === "admin" ? true : false}
+                login={true}
               />
             }
           >

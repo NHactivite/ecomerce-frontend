@@ -89,6 +89,8 @@ const Home = () => {
   const {dark}=useSelector((state:{darkReducer:darkReducerInitialState})=>state.darkReducer)
   
   const {data:brands,isLoading:brandsLoading}=useBrandsQuery("")
+  const uniqueBrands = [...new Set(brands?.Brands.map(brand => brand.toLowerCase()))];
+
 
   const [addWish]=useNewWishMutation()
  const addCartHandler=(cartItem:CartItem)=>{
@@ -116,7 +118,7 @@ const addWishHandler = async (newWishRequest: newWishRequest) => {
           <aside>
             <h1>Brands</h1>
             <ul >
-              {brandsLoading?<Skeleton/>:brands?.Brands.map((i) => (
+              {brandsLoading?<Skeleton/>:uniqueBrands.map((i) => (
                 <li key={i}>
                   <Link className={`${dark ? 'dark' : ''}`} to={`/search?search=${i.toLowerCase()}`}>{i.toUpperCase()}</Link>
                 </li>

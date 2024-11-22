@@ -8,13 +8,14 @@ interface Props{
     adminRoute?:boolean;
     isAdmin?:boolean;
     redirect?:string;
+    login?:boolean;
 }
 
 
-const ProtectedRoute = ({isAuthenticated,children,adminRoute,isAdmin,redirect="/"}:Props) => {
+const ProtectedRoute = ({isAuthenticated,children,adminRoute,isAdmin,redirect="/",login}:Props) => {
    
     if(!isAuthenticated) {
-      toast.error("Login First")
+      login?toast.error("Login First"):""
      return <Navigate to={redirect}/>
     }
 
